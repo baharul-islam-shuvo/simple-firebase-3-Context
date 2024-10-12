@@ -1,11 +1,26 @@
+import { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "../../Provider/authProvider";
 
 const Header = () => {
+
+    const { user, logOut } = useContext(AuthContext);
+
+    const handleLogOut = () => {
+        logOut()
+            .then(() => console.log('user logged out'))
+            .catch(error => console.error(error));
+    }
 
     const navLinks = <>
         <li><NavLink to="/">Home</NavLink></li>
         <li><NavLink to="/login">Login</NavLink></li>
         <li><NavLink to="/register">Register</NavLink></li>
+        {user && <>
+            <li><NavLink to="/orders">Orders</NavLink></li>
+            <li><NavLink to="/profile">Profile</NavLink></li>
+            <li><NavLink to="/dashBoard">Dashboard</NavLink></li>
+        </>}
     </>
 
     return (
@@ -32,15 +47,24 @@ const Header = () => {
                         {navLinks}
                     </ul>
                 </div>
-                <Link to="/"><a className="btn btn-ghost text-xl">Simple-Firebase</a></Link>
+                <Link to="/"><button className="btn btn-ghost text-xl">Simple-Firebase</button></Link>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1 gap-2">
                     {navLinks}
                 </ul >
             </div >
-            <div className="navbar-end">
-                <a className="btn">Button</a>
+            <div className="navbar-end ">
+                {
+                    user ? <>
+                        <span>{user.email}</span>
+                        <a onClick={handleLogOut} className="btn btn-sm ml-3">Sign Out</a>
+                    </> :
+                        <Link to="/login">
+                            <button className="btn btn-sm ml-3">Login</button>
+                        </Link>
+                }
+
             </div>
         </div >
     );
